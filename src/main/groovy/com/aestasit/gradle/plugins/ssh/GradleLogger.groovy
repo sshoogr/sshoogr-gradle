@@ -8,20 +8,20 @@ class GradleLogger implements Logger {
 
   Project project
 
-  public GradleLogger(Project project) {
+  GradleLogger(Project project) {
     super();
     this.project = project;
   }
 
-  public void debug(String message) {
+  void debug(String message) {
     project.logger.debug(message)
   }
 
-  public void info(String message) {
+  void info(String message) {
     project.logger.info(message)
   }
 
-  public void warn(String message) {
+  void warn(String message) {
     project.logger.warn(message)
   }
 }

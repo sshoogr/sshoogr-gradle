@@ -11,7 +11,7 @@ import com.aestasit.ssh.dsl.SshDslEngine
  * @author Andrey Adamovich
  *
  */
-public class SshPlugin implements Plugin<Project> {
+class SshPlugin implements Plugin<Project> {
 
   def void apply(Project project) {
     project.extensions.create("sshOptions", SshPluginSettings)
