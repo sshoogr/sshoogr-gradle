@@ -19,14 +19,15 @@ sourceCompatibility = '1.6'
 targetCompatibility = '1.6'
 
 dependencies {
+  groovy localGroovy()  
   compile gradleApi()
-  compile('com.aestasit.ssh:groovy-ssh-dsl:0.8-SNAPSHOT')
-  compile('commons-io:commons-io:2.4')
-  compile('com.jcraft:jsch:0.1.49') {
-    exclude module: 'slf4j-simple'
-  }
-  testCompile('org.apache.sshd:apache-sshd:0.7.0') {
-    exclude module: 'slf4j-simple'
-  }
-  groovy localGroovy()
+  compile 'com.aestasit.ssh:groovy-ssh-dsl:0.8-SNAPSHOT'
+  testCompile 'commons-io:commons-io:1.4'
+  testCompile 'com.aestasit.ssh:groovy-sshd-mock:0.3-SNAPSHOT'  
+}
+
+configurations {
+  all*.exclude group: 'commons-logging'
+  all*.exclude group: 'log4j'
+  all*.exclude module: 'slf4j-simple'
 }

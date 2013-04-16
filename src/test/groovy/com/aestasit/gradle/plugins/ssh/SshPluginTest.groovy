@@ -1,9 +1,5 @@
 package com.aestasit.gradle.plugins.ssh
 
-import org.apache.sshd.SshServer
-import org.apache.sshd.server.command.ScpCommandFactory
-import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider
-import org.apache.sshd.server.sftp.SftpSubsystem
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskExecutionException
@@ -12,10 +8,7 @@ import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
 
-import com.aestasit.gradle.plugins.ssh.mocks.MockCommandFactory
-import com.aestasit.gradle.plugins.ssh.mocks.MockFileSystemFactory
-import com.aestasit.gradle.plugins.ssh.mocks.MockShellFactory
-import com.aestasit.gradle.plugins.ssh.mocks.MockUserAuthFactory
+import com.aestasit.ssh.mocks.MockSshServer
 
 /**
  * SSH DSL test case that implements internal Gradle project to test different DSL syntax in different tasks.
@@ -23,26 +16,50 @@ import com.aestasit.gradle.plugins.ssh.mocks.MockUserAuthFactory
  * @author Andrey Adamovich
  *
  */
-class SshDslTest {
+class SshPluginTest {
 
-  static SshServer sshd
   static Project project
 
   @BeforeClass
-  def static void startSshd() {
-    sshd = SshServer.setUpDefaultServer()
-    sshd.with {
-      port = 2222
-      keyPairProvider = new SimpleGeneratorHostKeyProvider()
-      commandFactory = new ScpCommandFactory( new MockCommandFactory() )
-      shellFactory = new MockShellFactory()
-      userAuthFactories = [new MockUserAuthFactory()]
-      fileSystemFactory = new MockFileSystemFactory()
-      subsystemFactories = [
-        new SftpSubsystem.Factory()
-      ]
+  def static void createServer() {
+
+    // Create command expectations.
+    MockSshServer.command('^ls.*$') { inp, out, err, callback, env ->
+      out << '''total 20
+drwxr-xr-x 3 1100 1100 4096 Aug  7 16:52 .
+drwxr-xr-x 8 1100 1100 4096 Aug  1 17:53 ..
+drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
+'''
+      callback.onExit(0)
     }
-    sshd.start()
+
+    MockSshServer.command('^whoami.*$') { inp, out, err, callback, env ->
+      out << "root\n"
+      callback.onExit(0)
+    }
+
+    MockSshServer.command('^du.*$') { inp, out, err, callback, env ->
+      out << "100\n"
+      callback.onExit(0)
+    }
+
+    MockSshServer.command('^rm.*$') { inp, out, err, callback, env ->
+      out << "/tmp/test.file\n"
+      callback.onExit(0)
+    }
+
+    MockSshServer.command('timeout') { inp, out, err, callback, env ->
+      sleep(2000)
+      callback.onExit(0)
+    }
+
+    // Create file expectations.
+    MockSshServer.dir('.')
+    MockSshServer.dir('/tmp')
+
+    // Start server
+    MockSshServer.startSshd(2222)
+
   }
 
   @BeforeClass
@@ -59,10 +76,6 @@ class SshDslTest {
         defaultUser = 'user1'
         defaultPassword = '123456'
         defaultPort = 2222
-
-        hostProperty = 'host'
-        userProperty = 'user'
-        passwordProperty = 'password'
 
         trustUnknownHosts = true
 
@@ -214,8 +227,8 @@ class SshDslTest {
   }
 
   @AfterClass
-  def static void stopSshd() {
-    sshd?.stop(true)
+  def static void destroyServer() {
+    MockSshServer.stopSshd()
   }
 
   @Test
