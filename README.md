@@ -1,12 +1,12 @@
-# A Gradle plugin for working with remote SSH servers
+# gradle-ssh-plugin
 
 ## Overview
 
-The `gradle-ssh-plugin` was jointly developed by *Aestas/IT* (http://aestasit.com) and *NetCompany A/S* (http://www.netcompany.com/) 
-to support quickly growing operations and hosting department.
-
-The plugin allows connecting, executing remote commands, coping files and directories, 
+The `gradle-ssh-plugin` is a Gradle plugin for working with remote SSH servers. It allows connecting, executing remote commands, coping files and directories, 
 creating tunnels in a simple and concise way.
+
+The plugin was jointly developed by *Aestas/IT* (http://aestasit.com) and *NetCompany A/S* (http://www.netcompany.com/) 
+to support quickly growing operations and hosting department.
 
 ### Quick example
 
