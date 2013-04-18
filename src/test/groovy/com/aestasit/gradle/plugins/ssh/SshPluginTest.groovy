@@ -79,6 +79,8 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
 
         trustUnknownHosts = true
 
+        verbose = true
+
         execOptions {
           showOutput = true
           failOnError = false
@@ -88,7 +90,6 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
           appendFile = true
         }
 
-        scpOptions { verbose = true }
       }
 
       task('testDefaultSettings') << {
