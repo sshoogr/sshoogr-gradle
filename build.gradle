@@ -21,7 +21,7 @@ targetCompatibility = '1.6'
 dependencies {
   groovy localGroovy()  
   compile gradleApi()
-  compile 'com.aestasit.ssh:groovy-ssh-dsl:0.8-SNAPSHOT'
+  compile 'com.aestasit.ssh:groovy-ssh-dsl:0.8.1-SNAPSHOT'
   testCompile 'commons-io:commons-io:1.4'
   testCompile 'com.aestasit.ssh:groovy-sshd-mock:0.3-SNAPSHOT'  
 }
