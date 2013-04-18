@@ -53,6 +53,10 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
       callback.onExit(0)
     }
 
+    MockSshServer.command('^sudo.*$') { inp, out, err, callback, env ->
+      callback.onExit(0)
+    }
+
     // Create file expectations.
     MockSshServer.dir('.')
     MockSshServer.dir('/tmp')
@@ -83,7 +87,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
 
         execOptions {
           showOutput = true
-          failOnError = false
+          failOnError = true
           succeedOnExitStatus = 0
           maxWait = 30000
           outputFile = file("output.file")
