@@ -5,7 +5,7 @@ import com.aestasit.ssh.SshOptions
 /**
  * Configuration object holding options used for global SSH plug-in configuration.
  *
- * @author Andrey Adamovich
+ * @author Aestas/IT
  *
  */
 class SshPluginSettings extends SshOptions {

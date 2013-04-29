@@ -4,24 +4,36 @@ import org.gradle.api.Project
 
 import com.aestasit.ssh.log.Logger
 
+/**
+ * Gradle-based logger.
+ *
+ * @author Aestas/IT
+ *
+ */
 class GradleLogger implements Logger {
 
   Project project
+  boolean verbose
 
-  GradleLogger(Project project) {
-    super();
-    this.project = project;
+  GradleLogger(Project project, boolean verbose) {
+    super()
+    this.verbose = verbose
+    this.project = project
   }
 
-  void debug(String message) {
+  def void debug(String message) {
     project.logger.debug(message)
   }
 
-  void info(String message) {
-    project.logger.info(message)
+  def void info(String message) {
+    if (verbose) {
+      project.logger.quiet(message)
+    } else {
+      project.logger.info(message)
+    }
   }
 
-  void warn(String message) {
+  def void warn(String message) {
     project.logger.warn(message)
   }
 }
