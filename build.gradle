@@ -19,7 +19,7 @@ sourceCompatibility = '1.6'
 targetCompatibility = '1.6'
 
 dependencies {
-  groovy localGroovy()  
+  compile localGroovy()  
   compile gradleApi()
   compile 'com.aestasit.ssh:groovy-ssh-dsl:0.8.1-SNAPSHOT'
   testCompile 'commons-io:commons-io:1.4'
