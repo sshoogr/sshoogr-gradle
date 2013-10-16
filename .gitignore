@@ -8,4 +8,5 @@
 # Build Files #
 bin
 .gradle
+.DS_Store
 build

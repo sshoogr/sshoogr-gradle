@@ -11,5 +11,29 @@ uploadArchives {
     repository(url: ossSnapshotRepositoryUrl) {
       authentication(userName: ossSnapshotRepositoryUserName, password: ossSnapshotRepositoryPassword)
     }
+    pom.project {
+      name pomProjectTitle
+      packaging 'jar'
+      description pomProjectDescription
+      url "https://github.com/aestasit/${githubProjectName}"
+      scm {
+        url "scm:git@github.com:aestasit/${githubProjectName}.git"
+        connection "scm:git@github.com:aestasit/${githubProjectName}.git"
+        developerConnection "scm:git@github.com:aestasit/${githubProjectName}.git"
+      }
+      licenses {
+        license {
+          name 'The Apache Software License, Version 2.0'
+          url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          distribution 'repo'
+        }
+      }
+      developers {
+        developer {
+          id 'aadamovich'
+          name 'Andrey Adamovich'
+        }
+      }
+    }
   }
 }
