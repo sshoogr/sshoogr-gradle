@@ -25,9 +25,9 @@ targetCompatibility = '1.6'
 dependencies {
   compile localGroovy()  
   compile gradleApi()
-  compile 'com.aestasit.ssh:groovy-ssh-dsl:0.8.1-SNAPSHOT'
+  compile 'com.aestasit.infrastructure.sshoogr:sshoogr:0.9-SNAPSHOT'
   testCompile 'commons-io:commons-io:1.4'
-  testCompile 'com.aestasit.ssh:groovy-sshd-mock:0.3-SNAPSHOT'  
+  testCompile 'com.aestasit.infrastructure.mock:groovy-sshd-mock:0.3-SNAPSHOT'
   testCompile 'junit:junit:4.11'
   testRuntime 'ch.qos.logback:logback-core:1.0.7'
   testRuntime 'ch.qos.logback:logback-classic:1.0.7'
