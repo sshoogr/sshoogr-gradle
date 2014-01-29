@@ -1,6 +1,6 @@
 
 group = 'com.aestasit.infrastructure.sshoogr'
-version = '0.9.14'
+version = '0.9.15'
 
 buildscript {
   repositories { mavenCentral() }
@@ -25,7 +25,7 @@ targetCompatibility = '1.6'
 dependencies {
   compile localGroovy()  
   compile gradleApi()
-  compile 'com.aestasit.infrastructure.sshoogr:sshoogr:0.9.14'
+  compile 'com.aestasit.infrastructure.sshoogr:sshoogr:0.9.15'
   testCompile 'commons-io:commons-io:1.4'
   testCompile 'com.aestasit.infrastructure.mock:groovy-sshd-mock:0.3'
   testCompile 'junit:junit:4.11'
