@@ -48,5 +48,3 @@ It also gives access to a set of methods (`remoteSession`, `exec`, `scp` etc.) d
 For documentation on **Groovy SSH DSL**, please, refer to https://github.com/aestasit/groovy-ssh-dsl.
  
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/aestasit/sshoogr-gradle/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
