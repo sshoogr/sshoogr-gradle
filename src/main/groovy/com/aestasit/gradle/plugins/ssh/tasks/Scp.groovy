@@ -28,7 +28,7 @@ import org.gradle.api.tasks.TaskAction
 class Scp extends DefaultTask {
 
   @TaskAction
-  def void doCopy() {
+  void doCopy() {
     // TODO:
   }
 }

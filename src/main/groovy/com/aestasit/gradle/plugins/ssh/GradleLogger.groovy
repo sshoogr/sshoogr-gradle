@@ -16,9 +16,8 @@
 
 package com.aestasit.gradle.plugins.ssh
 
-import org.gradle.api.Project
-
 import com.aestasit.ssh.log.Logger
+import org.gradle.api.Project
 
 /**
  * Gradle-based logger.
@@ -37,11 +36,11 @@ class GradleLogger implements Logger {
     this.project = project
   }
 
-  def void debug(String message) {
+  void debug(String message) {
     project.logger.debug(message)
   }
 
-  def void info(String message) {
+  void info(String message) {
     if (verbose) {
       project.logger.quiet(message)
     } else {
@@ -49,7 +48,7 @@ class GradleLogger implements Logger {
     }
   }
 
-  def void warn(String message) {
+  void warn(String message) {
     project.logger.warn(message)
   }
 }

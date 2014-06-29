@@ -28,7 +28,7 @@ import org.gradle.api.tasks.TaskAction
 class Exec extends DefaultTask {
 
   @TaskAction
-  def void doExec() {
+  void doExec() {
     // TODO:
   }
 }
