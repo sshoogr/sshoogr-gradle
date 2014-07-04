@@ -1,4 +1,4 @@
-# gradle-ssh-plugin
+# sshoogr-gradle
 
 ## Overview
 
@@ -21,13 +21,12 @@ This is a simple example of some **SSH** features available in the plugin:
 
 ### Adding plugin to the build
 
-The first thing you need to do in order to use the plugin is to define a build script dependency to a remote repository 
-(https://oss.sonatype.org/content/repositories/snapshots), which contains plugin's library:
+The first thing you need to do in order to use the plugin is to define a build script dependency:
 
     buildscript {
       repositories { mavenCentral() }
       dependencies {
-        classpath 'com.aestasit.infrastructure.sshoogr:sshoogr-gradle:0.9.15 '
+        classpath 'com.aestasit.infrastructure.sshoogr:sshoogr-gradle:0.9.15'
       }
     }
 

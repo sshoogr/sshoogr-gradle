@@ -1,11 +1,11 @@
 
 group = 'com.aestasit.infrastructure.sshoogr'
-version = '0.9.15'
+version = '0.9.16-SNAPSHOT'
 
 buildscript {
   repositories { mavenCentral() }
   dependencies { classpath 'net.saliman:gradle-cobertura-plugin:2.0.0' }
-  dependencies { classpath 'org.ajoberstar:gradle-git:0.6.3' }
+  dependencies { classpath 'org.ajoberstar:gradle-git:0.8.0' }
 }
 
 apply plugin: 'groovy'
@@ -25,7 +25,7 @@ targetCompatibility = '1.6'
 dependencies {
   compile localGroovy()  
   compile gradleApi()
-  compile 'com.aestasit.infrastructure.sshoogr:sshoogr:0.9.15'
+  compile 'com.aestasit.infrastructure.sshoogr:sshoogr:0.9.16'
   testCompile 'commons-io:commons-io:1.4'
   testCompile 'com.aestasit.infrastructure.mock:groovy-sshd-mock:0.3'
   testCompile 'junit:junit:4.11'
@@ -40,5 +40,5 @@ configurations {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '1.8'
+  gradleVersion = '1.12'
 }
