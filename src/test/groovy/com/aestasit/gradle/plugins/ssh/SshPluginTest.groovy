@@ -16,6 +16,7 @@
 
 package com.aestasit.gradle.plugins.ssh
 
+import com.aestasit.ssh.mocks.MockSshServer
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.TaskExecutionException
@@ -23,8 +24,6 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
-
-import com.aestasit.ssh.mocks.MockSshServer
 
 /**
  * SSH DSL test case that implements internal Gradle project to test different DSL syntax in different tasks.
@@ -79,7 +78,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
       dir('/tmp')
 
       // Start server
-      startSshd(2222)
+      startSshd(27921)
 
     }
   }
@@ -97,7 +96,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         defaultHost = '127.0.0.1'
         defaultUser = 'user1'
         defaultPassword = '123456'
-        defaultPort = 2222
+        defaultPort = 27921
 
         trustUnknownHosts = true
 
@@ -130,7 +129,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         // Test overriding default connection settings through URL.
         remoteSession {
 
-          url = 'user2:654321@localhost:2222'
+          url = 'user2:654321@localhost:27921'
 
           exec 'whoami'
           exec 'du -s'
@@ -142,7 +141,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
 
       task('testMethodOverriding') << {
         // Test overriding default connection settings through method parameter.
-        remoteSession('user2:654321@localhost:2222') {
+        remoteSession('user2:654321@localhost:27921') {
 
           exec 'whoami'
           exec 'du -s'
@@ -157,9 +156,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         remoteSession {
 
           host = 'localhost'
-          username = 'user2'
+          user = 'user2'
           password = '654321'
-          port = 2222
+          port = 27921
 
           exec 'whoami'
           exec 'du -s'
