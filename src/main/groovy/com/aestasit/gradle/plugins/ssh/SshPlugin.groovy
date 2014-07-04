@@ -48,7 +48,7 @@ class SshPlugin implements Plugin<Project> {
     }
   }
 
-  void setLogLevel(Project project) {
+  static void setLogLevel(Project project) {
     if (project?.sshOptions?.logger instanceof GradleLogger) {
       ((GradleLogger) project.sshOptions.logger).verbose = project.sshOptions.verbose
     }
