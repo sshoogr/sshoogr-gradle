@@ -16,8 +16,13 @@
 
 package com.aestasit.gradle.plugins.ssh.tasks
 
+import com.aestasit.ssh.dsl.FileSetDelegate
+import com.aestasit.ssh.dsl.ScpOptionsDelegate
+import com.aestasit.ssh.dsl.SshDslEngine
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+
+import static groovy.lang.Closure.DELEGATE_FIRST
 
 /**
  * Gradle task type for remote file uploading/downloading.
@@ -27,8 +32,21 @@ import org.gradle.api.tasks.TaskAction
  */
 class Scp extends DefaultTask {
 
+  private final ScpOptionsDelegate copySpec = new ScpOptionsDelegate()
+
+  public void from(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
+    copySpec.from(cl)
+  }
+
+  public void into(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
+    copySpec.into(cl)
+  }
+
   @TaskAction
   void doCopy() {
-    // TODO:
+    SshDslEngine dslEngine = new SshDslEngine(project.sshOptions)
+    dslEngine.remoteSession {
+      scp(copySpec)
+    }
   }
 }

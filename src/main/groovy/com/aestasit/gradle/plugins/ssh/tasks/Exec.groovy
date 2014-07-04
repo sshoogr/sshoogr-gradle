@@ -16,7 +16,9 @@
 
 package com.aestasit.gradle.plugins.ssh.tasks
 
+import com.aestasit.ssh.dsl.SshDslEngine
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -27,8 +29,14 @@ import org.gradle.api.tasks.TaskAction
  */
 class Exec extends DefaultTask {
 
+  @Input
+  String command
+
   @TaskAction
   void doExec() {
-    // TODO:
+    SshDslEngine dslEngine = new SshDslEngine(project.sshOptions)
+    dslEngine.remoteSession {
+      exec(command)
+    }
   }
 }
