@@ -23,14 +23,15 @@ sourceCompatibility = '1.6'
 targetCompatibility = '1.6'
 
 dependencies {
-  compile localGroovy()  
   compile gradleApi()
+  compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
+  compile "org.slf4j:slf4j-api:${slf4jVersion}"
+  compile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+  compile "ch.qos.logback:logback-classic:${logbackVersion}"
   compile 'com.aestasit.infrastructure.sshoogr:sshoogr:0.9.16'
-  testCompile 'commons-io:commons-io:1.4'
   testCompile 'com.aestasit.infrastructure.mock:groovy-sshd-mock:0.3'
+  testCompile 'commons-io:commons-io:1.4'
   testCompile 'junit:junit:4.11'
-  testRuntime 'ch.qos.logback:logback-core:1.1.2'
-  testRuntime 'ch.qos.logback:logback-classic:1.1.2'
 }
 
 configurations {
