@@ -15,7 +15,7 @@ plugins {
 }
 
 group = 'com.aestasit.infrastructure.sshoogr'
-version = "0.9.18-SNAPSHOT"
+version = "0.9.18"
 
 apply from: 'repos.gradle'
 apply from: 'sonar.gradle'
