@@ -16,7 +16,7 @@
 
 package com.aestasit.gradle.plugins.ssh
 
-import com.aestasit.ssh.log.Logger
+import com.aestasit.infrastructure.ssh.log.Logger
 import org.gradle.api.Project
 
 /**

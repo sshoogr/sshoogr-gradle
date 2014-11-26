@@ -16,9 +16,9 @@
 
 package com.aestasit.gradle.plugins.ssh.tasks
 
-import com.aestasit.ssh.dsl.FileSetDelegate
-import com.aestasit.ssh.dsl.ScpOptionsDelegate
-import com.aestasit.ssh.dsl.SshDslEngine
+import com.aestasit.infrastructure.ssh.dsl.FileSetDelegate
+import com.aestasit.infrastructure.ssh.dsl.ScpOptionsDelegate
+import com.aestasit.infrastructure.ssh.dsl.SshDslEngine
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

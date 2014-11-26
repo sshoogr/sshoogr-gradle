@@ -107,8 +107,6 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
           failOnError = true
           succeedOnExitStatus = 0
           maxWait = 30000
-          outputFile = file("output.file")
-          appendFile = true
         }
 
       }

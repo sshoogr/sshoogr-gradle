@@ -16,7 +16,7 @@
 
 package com.aestasit.gradle.plugins.ssh
 
-import com.aestasit.ssh.dsl.SshDslEngine
+import com.aestasit.infrastructure.ssh.dsl.SshDslEngine
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -35,15 +35,14 @@ class SshPlugin implements Plugin<Project> {
   }
 
   void injectSshDslSupport(Project project) {
-    SshDslEngine dslEngine = new SshDslEngine(project.sshOptions)
     project.metaClass.with {
       remoteSession << { Closure cl ->
         setLogLevel(project)
-        dslEngine.remoteSession(cl)
+        new SshDslEngine(project.sshOptions).remoteSession(cl)
       }
       remoteSession << { String url, Closure cl ->
         setLogLevel(project)
-        dslEngine.remoteSession(url, cl)
+        new SshDslEngine(project.sshOptions).remoteSession(url, cl)
       }
     }
   }
