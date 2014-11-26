@@ -1,26 +1,25 @@
 
-group = 'com.aestasit.infrastructure.sshoogr'
-version = '0.9.17-SNAPSHOT'
+plugins {
 
-buildscript {
-  repositories { mavenCentral() }
-  dependencies { classpath 'net.saliman:gradle-cobertura-plugin:2.2.4' }
-  dependencies { classpath 'org.ajoberstar:gradle-git:0.8.0' }
+  id 'groovy'
+  id 'maven'
+  id 'eclipse'
+  id 'idea'
+  id 'project-report'
+
+  id "net.saliman.cobertura" version "2.2.5"
+  id "com.github.hierynomus.license" version "0.11.0"
+  id "org.ajoberstar.github-pages" version "0.10.0"
+  id "org.asciidoctor.gradle.asciidoctor" version "1.5.0"
+
 }
 
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-apply plugin: 'cobertura'
-apply plugin: 'github-pages'
+group = 'com.aestasit.infrastructure.sshoogr'
+version = "0.9.18-SNAPSHOT"
 
 apply from: 'repos.gradle'
 apply from: 'sonar.gradle'
 apply from: 'docs.gradle'
-
-sourceCompatibility = '1.6'
-targetCompatibility = '1.6'
 
 dependencies {
   compile gradleApi()
@@ -28,7 +27,7 @@ dependencies {
   compile "org.slf4j:slf4j-api:${slf4jVersion}"
   compile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
   compile "ch.qos.logback:logback-classic:${logbackVersion}"
-  compile 'com.aestasit.infrastructure.sshoogr:sshoogr:0.9.16'
+  compile "com.aestasit.infrastructure.sshoogr:sshoogr:${sshoogrVersion}"
   testCompile 'com.aestasit.infrastructure.mock:groovy-sshd-mock:0.3'
   testCompile 'commons-io:commons-io:1.4'
   testCompile 'junit:junit:4.11'
@@ -42,4 +41,8 @@ configurations {
 
 task wrapper(type: Wrapper) {
   gradleVersion = '2.1'
+}
+
+license {
+  header rootProject.file('HEADER')
 }
