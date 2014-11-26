@@ -26,7 +26,7 @@ The first thing you need to do in order to use the plugin is to define a build s
     buildscript {
       repositories { mavenCentral() }
       dependencies {
-        classpath 'com.aestasit.infrastructure.sshoogr:sshoogr-gradle:0.9.15'
+        classpath 'com.aestasit.infrastructure.sshoogr:sshoogr-gradle:0.9.18'
       }
     }
 
