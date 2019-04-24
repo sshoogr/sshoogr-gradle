@@ -16,8 +16,10 @@
 package com.aestasit.gradle.plugins.ssh
 
 import com.aestasit.ssh.mocks.MockSshServer
+import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
+import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.AfterClass
@@ -35,7 +37,7 @@ class SshPluginTest {
   static Project project
 
   @BeforeClass
-  def static void createServer() {
+  static void createServer() {
     MockSshServer.with {
     
       // Create command expectations.
@@ -83,12 +85,12 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
   }
 
   @BeforeClass
-  def static void buildProject() {
+  static void buildProject() {
     project = ProjectBuilder.builder().build()
-    project.logging.level = LogLevel.INFO
+    project.logging.captureStandardOutput LogLevel.INFO
     project.with {
 
-      apply plugin: 'secureShell'
+      apply plugin: 'com.aestasit.sshoogr'
 
       sshOptions {
 
@@ -110,7 +112,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
 
       }
 
-      task('testDefaultSettings') << {
+      task('testDefaultSettings', type: SshTask).doLast {
         // Test with default session settings.
         remoteSession {
 
@@ -122,7 +124,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testUrlAndOverriding') << {
+      task('testUrlAndOverriding', type: SshTask).doLast {
         // Test overriding default connection settings through URL.
         remoteSession {
 
@@ -136,7 +138,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testMethodOverriding') << {
+      task('testMethodOverriding', type: SshTask).doLast {
         // Test overriding default connection settings through method parameter.
         remoteSession('user2:654321@localhost:27921') {
 
@@ -148,7 +150,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testPropertyOverriding') << {
+      task('testPropertyOverriding', type: SshTask).doLast {
         // Test overriding default connection settings through delegate parameters.
         remoteSession {
 
@@ -165,7 +167,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testOutputScripting') << {
+      task('testOutputScripting', type: SshTask).doLast {
         // Test saving the output and setting exec parameters through a builder.
         remoteSession {
           println ">>>>> COMMAND: whoami"
@@ -175,24 +177,24 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testExecClosure') << {
+      task('testExecClosure', type: SshTask).doLast {
         // Test closure based builder for exec.
         remoteSession { exec { command = 'whoami' } }
       }
 
-      task('testFailOnError') << {
+      task('testFailOnError', type: SshTask).doLast {
         remoteSession {
           exec(command: 'abcd', failOnError: false)
         }
       }
 
-      task('testTimeout') << {
+      task('testTimeout', type: SshTask).doLast {
         remoteSession {
           exec(command: 'timeout', maxWait: 1000)
         }
       }
 
-      task('testCopy') << {
+      task('testCopy', type: SshTask).doLast {
         remoteSession {
           scp {
             from {
@@ -203,7 +205,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testMultiExec') << {
+      task('testMultiExec', type: SshTask).doLast {
         remoteSession {
           exec([
             'ls -la',
@@ -216,7 +218,7 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testPrefix') << {
+      task('testPrefix', type: SshTask).doLast {
         remoteSession {
           prefix('sudo') {
             exec([
@@ -227,61 +229,60 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testRemoteFile') << {
+      task('testRemoteFile', type: SshTask).doLast {
         remoteSession {
           remoteFile('/etc/init.conf').text = 'content'
         }
       }
 
     }
-
   }
 
-  def static File getCurrentDir() {
+  static File getCurrentDir() {
     return new File(".").getAbsoluteFile()
   }
 
-  def static File getTestFile() {
+  static File getTestFile() {
     return new File("input.file").getAbsoluteFile()
   }
 
   @AfterClass
-  def static void destroyServer() {
+  static void destroyServer() {
     MockSshServer.stopSshd()
   }
 
   @Test
-  def void testDefaultSettings() throws Exception {
+  void testDefaultSettings() throws Exception {
     project.tasks.'testDefaultSettings'.execute()
   }
 
   @Test
-  def void testUrlAndOverriding() throws Exception {
+  void testUrlAndOverriding() throws Exception {
     project.tasks.'testUrlAndOverriding'.execute()
   }
 
   @Test
-  def void testMethodOverriding() throws Exception {
+  void testMethodOverriding() throws Exception {
     project.tasks.'testMethodOverriding'.execute()
   }
 
   @Test
-  def void testPropertyOverriding() throws Exception {
+  void testPropertyOverriding() throws Exception {
     project.tasks.'testPropertyOverriding'.execute()
   }
 
   @Test
-  def void testOutputScripting() throws Exception {
+  void testOutputScripting() throws Exception {
     project.tasks.'testOutputScripting'.execute()
   }
 
   @Test
-  def void testFailOnError() throws Exception {
+  void testFailOnError() throws Exception {
     project.tasks.'testFailOnError'.execute()
   }
 
   @Test
-  def void testTimeout() throws Exception {
+  void testTimeout() throws Exception {
     try {
       project.tasks.'testTimeout'.execute()
     } catch (TaskExecutionException e) {
@@ -290,28 +291,32 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
   }
 
   @Test
-  def void testExecClosure() throws Exception {
+  void testExecClosure() throws Exception {
     project.tasks.'testExecClosure'.execute()
   }
 
   @Test
-  def void testCopy() throws Exception {
+  void testCopy() throws Exception {
     project.tasks.'testCopy'.execute()
   }
 
   @Test
-  def void testMultiExec() throws Exception {
+  void testMultiExec() throws Exception {
     project.tasks.'testMultiExec'.execute()
   }
 
   @Test
-  def void testPrefix() throws Exception {
+  void testPrefix() throws Exception {
     project.tasks.'testPrefix'.execute()
   }
 
   @Test
-  def void testRemoteFile() throws Exception {
+  void testRemoteFile() throws Exception {
     project.tasks.'testRemoteFile'.execute()
   }
 
+  static class SshTask extends DefaultTask {
+    @TaskAction
+    void execute() { }
+  }
 }

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// !! UNUSED !!
+
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
   classifier = 'javadoc'
   from 'build/docs/groovydoc'
