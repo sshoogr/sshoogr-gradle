@@ -33,11 +33,11 @@ class Scp extends DefaultTask {
 
   private final ScpOptionsDelegate copySpec = new ScpOptionsDelegate()
 
-  public void from(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
+  void from(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
     copySpec.from(cl)
   }
 
-  public void into(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
+  void into(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
     copySpec.into(cl)
   }
 

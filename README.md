@@ -12,27 +12,50 @@ to support quickly growing operations and hosting department.
 
 This is a simple example of some **SSH** features available in the plugin:
 
-    task remoteTask << {
+**Using a closure**
+
+    task mySshTask(type: RemoteSession) {
       remoteSession("user:password@localhost:22") {
         exec 'rm -rf /tmp/cache/'
         scp "$buildDir/cache.content", '/tmp/cache/cache.content'        
       }
     }
 
-### Adding plugin to the build
+**Using an Action**
 
-The first thing you need to do in order to use the plugin is to define a build script dependency:
-
-    buildscript {
-      repositories { mavenCentral() }
-      dependencies {
-        classpath 'com.aestasit.infrastructure.sshoogr:sshoogr-gradle:0.9.18'
-      }
+    task mySshTask(type: RemoteSession) {
+      remoteSession("user:password@localhost:22", new Action<SessionDelegate>() {
+          @Override
+          void execute(SessionDelegate sd) {
+            sd.exec 'rm -rf /tmp/cache/'
+            sd.scp "$buildDir/cache.content", '/tmp/cache/cache.content'
+          }
+      })
     }
 
-And then apply the plugin:
-    
-    apply plugin: 'secureShell'
+### Adding plugin to the build
+
+Applying the plugin can be done in 2 ways:
+
+**Option #1**
+
+    buildscript {
+        repositories {
+            jcenter()
+            gradlePluginPortal()
+        }
+        dependencies {
+            classpath 'com.aestasit.infrastructure.sshoogr:sshoogr-gradle:0.9.18'
+        }
+    }
+    apply plugin: 'com.aestasit.sshoogr'
+
+**Option #2**
+
+    plugins {
+        id 'com.aestasit.sshoogr' version '0.9.18'
+    }
+
 
 Plugin can be configured with the help of `sshOptions` structure:
 
@@ -40,7 +63,7 @@ Plugin can be configured with the help of `sshOptions` structure:
       ...
     }
 
-It also gives access to a set of methods (`remoteSession`, `exec`, `scp` etc.) defined by **Sshoogr** - **Groovy SSH DSL**. 
+It also gives access to a set of task types (`RemoteSession`, `Exec`, `Scp` etc.) defined by **Sshoogr** - **Groovy SSH DSL**.
 
 For documentation on **Sshoogr DSL**, please, refer to https://github.com/aestasit/sshoogr.
  

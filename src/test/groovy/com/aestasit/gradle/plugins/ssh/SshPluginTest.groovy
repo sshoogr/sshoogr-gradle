@@ -15,11 +15,10 @@
  */
 package com.aestasit.gradle.plugins.ssh
 
+import com.aestasit.gradle.plugins.ssh.tasks.RemoteSession
 import com.aestasit.ssh.mocks.MockSshServer
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
-import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.AfterClass
@@ -112,9 +111,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
 
       }
 
-      task('testDefaultSettings', type: SshTask).doLast {
+      task('testDefaultSettings', type: RemoteSession) {
         // Test with default session settings.
-        remoteSession {
+        action {
 
           exec 'whoami'
           exec 'du -s'
@@ -124,9 +123,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testUrlAndOverriding', type: SshTask).doLast {
+      task('testUrlAndOverriding', type: RemoteSession) {
         // Test overriding default connection settings through URL.
-        remoteSession {
+        action {
 
           url = 'user2:654321@localhost:27921'
 
@@ -138,9 +137,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testMethodOverriding', type: SshTask).doLast {
+      task('testMethodOverriding', type: RemoteSession) {
         // Test overriding default connection settings through method parameter.
-        remoteSession('user2:654321@localhost:27921') {
+        action('user2:654321@localhost:27921') {
 
           exec 'whoami'
           exec 'du -s'
@@ -150,9 +149,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testPropertyOverriding', type: SshTask).doLast {
+      task('testPropertyOverriding', type: RemoteSession) {
         // Test overriding default connection settings through delegate parameters.
-        remoteSession {
+        action {
 
           host = 'localhost'
           user = 'user2'
@@ -167,9 +166,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testOutputScripting', type: SshTask).doLast {
+      task('testOutputScripting', type: RemoteSession) {
         // Test saving the output and setting exec parameters through a builder.
-        remoteSession {
+        action {
           println ">>>>> COMMAND: whoami"
           def output = exec(command: 'whoami', showOutput: false)
           output.output.eachLine { line -> println ">>>>> OUTPUT: ${line.reverse()}" }
@@ -177,25 +176,25 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testExecClosure', type: SshTask).doLast {
+      task('testExecClosure', type: RemoteSession) {
         // Test closure based builder for exec.
-        remoteSession { exec { command = 'whoami' } }
+        action { exec { command = 'whoami' } }
       }
 
-      task('testFailOnError', type: SshTask).doLast {
-        remoteSession {
+      task('testFailOnError', type: RemoteSession) {
+        action {
           exec(command: 'abcd', failOnError: false)
         }
       }
 
-      task('testTimeout', type: SshTask).doLast {
-        remoteSession {
+      task('testTimeout', type: RemoteSession) {
+        action {
           exec(command: 'timeout', maxWait: 1000)
         }
       }
 
-      task('testCopy', type: SshTask).doLast {
-        remoteSession {
+      task('testCopy', type: RemoteSession) {
+        action {
           scp {
             from {
               localDir new File(getCurrentDir(), 'test-settings')
@@ -205,8 +204,8 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testMultiExec', type: SshTask).doLast {
-        remoteSession {
+      task('testMultiExec', type: RemoteSession) {
+        action {
           exec([
             'ls -la',
             'whoami'
@@ -218,8 +217,8 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testPrefix', type: SshTask).doLast {
-        remoteSession {
+      task('testPrefix', type: RemoteSession) {
+        action {
           prefix('sudo') {
             exec([
               'ls -la',
@@ -229,8 +228,8 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testRemoteFile', type: SshTask).doLast {
-        remoteSession {
+      task('testRemoteFile', type: RemoteSession) {
+        action {
           remoteFile('/etc/init.conf').text = 'content'
         }
       }
@@ -253,70 +252,65 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
 
   @Test
   void testDefaultSettings() throws Exception {
-    project.tasks.'testDefaultSettings'.execute()
+    project.tasks.'testDefaultSettings'.executeRemoteSession()
   }
 
   @Test
   void testUrlAndOverriding() throws Exception {
-    project.tasks.'testUrlAndOverriding'.execute()
+    project.tasks.'testUrlAndOverriding'.executeRemoteSession()
   }
 
   @Test
   void testMethodOverriding() throws Exception {
-    project.tasks.'testMethodOverriding'.execute()
+    project.tasks.'testMethodOverriding'.executeRemoteSession()
   }
 
   @Test
   void testPropertyOverriding() throws Exception {
-    project.tasks.'testPropertyOverriding'.execute()
+    project.tasks.'testPropertyOverriding'.executeRemoteSession()
   }
 
   @Test
   void testOutputScripting() throws Exception {
-    project.tasks.'testOutputScripting'.execute()
+    project.tasks.'testOutputScripting'.executeRemoteSession()
   }
 
   @Test
   void testFailOnError() throws Exception {
-    project.tasks.'testFailOnError'.execute()
+    project.tasks.'testFailOnError'.executeRemoteSession()
   }
 
   @Test
   void testTimeout() throws Exception {
     try {
-      project.tasks.'testTimeout'.execute()
-    } catch (TaskExecutionException e) {
-      assert e.cause.message.contains('timeout')
+      project.tasks.'testTimeout'.executeRemoteSession()
+    } catch (Exception e) {
+      assert e.message.contains('timeout')
     }
   }
 
   @Test
   void testExecClosure() throws Exception {
-    project.tasks.'testExecClosure'.execute()
+    project.tasks.'testExecClosure'.executeRemoteSession()
   }
 
   @Test
   void testCopy() throws Exception {
-    project.tasks.'testCopy'.execute()
+    project.tasks.'testCopy'.executeRemoteSession()
   }
 
   @Test
   void testMultiExec() throws Exception {
-    project.tasks.'testMultiExec'.execute()
+    project.tasks.'testMultiExec'.executeRemoteSession()
   }
 
   @Test
   void testPrefix() throws Exception {
-    project.tasks.'testPrefix'.execute()
+    project.tasks.'testPrefix'.executeRemoteSession()
   }
 
   @Test
   void testRemoteFile() throws Exception {
-    project.tasks.'testRemoteFile'.execute()
-  }
-
-  static class SshTask extends DefaultTask {
-    @TaskAction
-    void execute() { }
+    project.tasks.'testRemoteFile'.executeRemoteSession()
   }
 }
