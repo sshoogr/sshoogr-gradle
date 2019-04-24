@@ -1,25 +1,26 @@
 
 plugins {
-
   id 'groovy'
-  id 'maven'
+  id 'maven-publish'
   id 'eclipse'
   id 'idea'
-  id 'project-report'
+  id 'java-gradle-plugin'
 
-  id "net.saliman.cobertura" version "2.2.5"
-  id "com.github.hierynomus.license" version "0.11.0"
-  id "org.ajoberstar.github-pages" version "0.10.0"
-  id "org.asciidoctor.gradle.asciidoctor" version "1.5.0"
-
+  id 'com.gradle.build-scan' version '2.2.1'
+  id 'com.gradle.plugin-publish' version '0.10.1'
+  id 'net.saliman.cobertura' version '2.6.1'
+  id 'com.github.hierynomus.license' version '0.15.0'
+  id 'org.ajoberstar.git-publish' version '2.1.1'
+  id 'org.asciidoctor.jvm.convert' version '2.1.0'
+  id 'com.github.ben-manes.versions' version '0.21.0'
 }
 
 group = 'com.aestasit.infrastructure.sshoogr'
 version = '0.9.19-SNAPSHOT'
 
-apply from: 'repos.gradle'
-apply from: 'sonar.gradle'
-apply from: 'docs.gradle'
+// apply from: 'repos.gradle'
+// apply from: 'sonar.gradle'
+// apply from: 'docs.gradle'
 
 dependencies {
   compile gradleApi()
@@ -28,7 +29,7 @@ dependencies {
   compile "ch.qos.logback:logback-classic:${logbackVersion}"
   compile "com.aestasit.infrastructure.sshoogr:sshoogr:${sshoogrVersion}"
   testCompile 'com.aestasit.infrastructure.mock:groovy-sshd-mock:0.3'
-  testCompile 'commons-io:commons-io:1.4'
+  testCompile 'commons-io:commons-io:2.6'
   testCompile 'junit:junit:4.11'
 }
 
@@ -38,10 +39,6 @@ configurations {
   all*.exclude module: 'slf4j-simple'
 }
 
-task wrapper(type: Wrapper) {
-  gradleVersion = '2.1'
-}
-
-license {
-  header rootProject.file('HEADER')
-}
+// license {
+//   header rootProject.file('HEADER')
+// }
