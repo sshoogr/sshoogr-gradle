@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aestasit.gradle.plugins.ssh
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+apply plugin: "sonar-runner"
 
-/**
- * Gradle plug-in that injects SSH functionality into the build script.
- *
- * @author Aestas/IT
- *
- */
-class SshPlugin implements Plugin<Project> {
-
-  void apply(Project project) {
-    project.extensions.create('sshOptions', SshPluginSettings)
-    project.sshOptions.logger = new GradleLogger(project, false)
+sonarRunner {
+  sonarProperties {
+    property "sonar.host.url", sonarServerUrl
+    property "sonar.login", sonarServerUser
+    property "sonar.password", sonarServerPassword
+    property "sonar.jdbc.url", sonarJdbcUrl
+    property "sonar.jdbc.username", sonarJdbcUser
+    property "sonar.jdbc.password", sonarJdbcPassword
+    property "sonar.jdbc.driverClassName", sonarJdbcDriver
+    property "sonar.language", "grvy"
+    property "sonar.artifact.path", "build/libs/${jar.archiveName}"
   }
 }
+
+tasks['sonarRunner'].dependsOn assemble
+

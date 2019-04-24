@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2014 Aestas/IT
+ * Copyright (C) 2011-2019 Aestas/IT
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.aestasit.gradle.plugins.ssh
 
+import com.aestasit.gradle.plugins.ssh.tasks.RemoteSession
 import com.aestasit.ssh.mocks.MockSshServer
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
@@ -36,7 +36,7 @@ class SshPluginTest {
   static Project project
 
   @BeforeClass
-  def static void createServer() {
+  static void createServer() {
     MockSshServer.with {
     
       // Create command expectations.
@@ -84,12 +84,12 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
   }
 
   @BeforeClass
-  def static void buildProject() {
+  static void buildProject() {
     project = ProjectBuilder.builder().build()
-    project.logging.level = LogLevel.INFO
+    project.logging.captureStandardOutput LogLevel.INFO
     project.with {
 
-      apply plugin: 'secureShell'
+      apply plugin: 'com.aestasit.sshoogr'
 
       sshOptions {
 
@@ -111,9 +111,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
 
       }
 
-      task('testDefaultSettings') << {
+      task('testDefaultSettings', type: RemoteSession) {
         // Test with default session settings.
-        remoteSession {
+        action {
 
           exec 'whoami'
           exec 'du -s'
@@ -123,9 +123,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testUrlAndOverriding') << {
+      task('testUrlAndOverriding', type: RemoteSession) {
         // Test overriding default connection settings through URL.
-        remoteSession {
+        action {
 
           url = 'user2:654321@localhost:27921'
 
@@ -137,9 +137,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testMethodOverriding') << {
+      task('testMethodOverriding', type: RemoteSession) {
         // Test overriding default connection settings through method parameter.
-        remoteSession('user2:654321@localhost:27921') {
+        action('user2:654321@localhost:27921') {
 
           exec 'whoami'
           exec 'du -s'
@@ -149,9 +149,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testPropertyOverriding') << {
+      task('testPropertyOverriding', type: RemoteSession) {
         // Test overriding default connection settings through delegate parameters.
-        remoteSession {
+        action {
 
           host = 'localhost'
           user = 'user2'
@@ -166,9 +166,9 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testOutputScripting') << {
+      task('testOutputScripting', type: RemoteSession) {
         // Test saving the output and setting exec parameters through a builder.
-        remoteSession {
+        action {
           println ">>>>> COMMAND: whoami"
           def output = exec(command: 'whoami', showOutput: false)
           output.output.eachLine { line -> println ">>>>> OUTPUT: ${line.reverse()}" }
@@ -176,25 +176,25 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testExecClosure') << {
+      task('testExecClosure', type: RemoteSession) {
         // Test closure based builder for exec.
-        remoteSession { exec { command = 'whoami' } }
+        action { exec { command = 'whoami' } }
       }
 
-      task('testFailOnError') << {
-        remoteSession {
+      task('testFailOnError', type: RemoteSession) {
+        action {
           exec(command: 'abcd', failOnError: false)
         }
       }
 
-      task('testTimeout') << {
-        remoteSession {
+      task('testTimeout', type: RemoteSession) {
+        action {
           exec(command: 'timeout', maxWait: 1000)
         }
       }
 
-      task('testCopy') << {
-        remoteSession {
+      task('testCopy', type: RemoteSession) {
+        action {
           scp {
             from {
               localDir new File(getCurrentDir(), 'test-settings')
@@ -204,8 +204,8 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testMultiExec') << {
-        remoteSession {
+      task('testMultiExec', type: RemoteSession) {
+        action {
           exec([
             'ls -la',
             'whoami'
@@ -217,8 +217,8 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testPrefix') << {
-        remoteSession {
+      task('testPrefix', type: RemoteSession) {
+        action {
           prefix('sudo') {
             exec([
               'ls -la',
@@ -228,91 +228,89 @@ drwxr-xr-x 3 1100 1100 4096 Aug  7 16:49 examples
         }
       }
 
-      task('testRemoteFile') << {
-        remoteSession {
+      task('testRemoteFile', type: RemoteSession) {
+        action {
           remoteFile('/etc/init.conf').text = 'content'
         }
       }
 
     }
-
   }
 
-  def static File getCurrentDir() {
+  static File getCurrentDir() {
     return new File(".").getAbsoluteFile()
   }
 
-  def static File getTestFile() {
+  static File getTestFile() {
     return new File("input.file").getAbsoluteFile()
   }
 
   @AfterClass
-  def static void destroyServer() {
+  static void destroyServer() {
     MockSshServer.stopSshd()
   }
 
   @Test
-  def void testDefaultSettings() throws Exception {
-    project.tasks.'testDefaultSettings'.execute()
+  void testDefaultSettings() throws Exception {
+    project.tasks.'testDefaultSettings'.executeRemoteSession()
   }
 
   @Test
-  def void testUrlAndOverriding() throws Exception {
-    project.tasks.'testUrlAndOverriding'.execute()
+  void testUrlAndOverriding() throws Exception {
+    project.tasks.'testUrlAndOverriding'.executeRemoteSession()
   }
 
   @Test
-  def void testMethodOverriding() throws Exception {
-    project.tasks.'testMethodOverriding'.execute()
+  void testMethodOverriding() throws Exception {
+    project.tasks.'testMethodOverriding'.executeRemoteSession()
   }
 
   @Test
-  def void testPropertyOverriding() throws Exception {
-    project.tasks.'testPropertyOverriding'.execute()
+  void testPropertyOverriding() throws Exception {
+    project.tasks.'testPropertyOverriding'.executeRemoteSession()
   }
 
   @Test
-  def void testOutputScripting() throws Exception {
-    project.tasks.'testOutputScripting'.execute()
+  void testOutputScripting() throws Exception {
+    project.tasks.'testOutputScripting'.executeRemoteSession()
   }
 
   @Test
-  def void testFailOnError() throws Exception {
-    project.tasks.'testFailOnError'.execute()
+  void testFailOnError() throws Exception {
+    project.tasks.'testFailOnError'.executeRemoteSession()
   }
 
   @Test
-  def void testTimeout() throws Exception {
+  void testTimeout() throws Exception {
     try {
-      project.tasks.'testTimeout'.execute()
-    } catch (TaskExecutionException e) {
-      assert e.cause.message.contains('timeout')
+      project.tasks.'testTimeout'.executeRemoteSession()
+    } catch (Exception e) {
+      assert e.message.contains('timeout')
     }
   }
 
   @Test
-  def void testExecClosure() throws Exception {
-    project.tasks.'testExecClosure'.execute()
+  void testExecClosure() throws Exception {
+    project.tasks.'testExecClosure'.executeRemoteSession()
   }
 
   @Test
-  def void testCopy() throws Exception {
-    project.tasks.'testCopy'.execute()
+  void testCopy() throws Exception {
+    project.tasks.'testCopy'.executeRemoteSession()
   }
 
   @Test
-  def void testMultiExec() throws Exception {
-    project.tasks.'testMultiExec'.execute()
+  void testMultiExec() throws Exception {
+    project.tasks.'testMultiExec'.executeRemoteSession()
   }
 
   @Test
-  def void testPrefix() throws Exception {
-    project.tasks.'testPrefix'.execute()
+  void testPrefix() throws Exception {
+    project.tasks.'testPrefix'.executeRemoteSession()
   }
 
   @Test
-  def void testRemoteFile() throws Exception {
-    project.tasks.'testRemoteFile'.execute()
+  void testRemoteFile() throws Exception {
+    project.tasks.'testRemoteFile'.executeRemoteSession()
   }
-
 }

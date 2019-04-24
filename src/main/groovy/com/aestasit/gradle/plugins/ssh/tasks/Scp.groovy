@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2014 Aestas/IT
+ * Copyright (C) 2011-2019 Aestas/IT
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.aestasit.gradle.plugins.ssh.tasks
 
 import com.aestasit.infrastructure.ssh.dsl.FileSetDelegate
@@ -34,11 +33,11 @@ class Scp extends DefaultTask {
 
   private final ScpOptionsDelegate copySpec = new ScpOptionsDelegate()
 
-  public void from(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
+  void from(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
     copySpec.from(cl)
   }
 
-  public void into(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
+  void into(@DelegatesTo(strategy = DELEGATE_FIRST, value = FileSetDelegate) Closure cl) {
     copySpec.into(cl)
   }
 
