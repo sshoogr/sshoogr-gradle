@@ -15,7 +15,7 @@ This is a simple example of some **SSH** features available in the plugin:
 **Using a closure**
 
     task mySshTask(type: RemoteSession) {
-      remoteSession("user:password@localhost:22") {
+      closure("user:password@localhost:22") {
         exec 'rm -rf /tmp/cache/'
         scp "$buildDir/cache.content", '/tmp/cache/cache.content'        
       }
@@ -24,7 +24,7 @@ This is a simple example of some **SSH** features available in the plugin:
 **Using an Action**
 
     task mySshTask(type: RemoteSession) {
-      remoteSession("user:password@localhost:22", new Action<SessionDelegate>() {
+      action("user:password@localhost:22", new Action<SessionDelegate>() {
           @Override
           void execute(SessionDelegate sd) {
             sd.exec 'rm -rf /tmp/cache/'
