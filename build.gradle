@@ -30,6 +30,7 @@ buildScan {
 }
 
 config {
+
   release = (rootProject.findProperty('release') ?: false).toBoolean()
 
   info {
@@ -46,9 +47,9 @@ config {
     }
 
     scm {
-      url                 = "scm:git@github.com:aestasit/${rootProject.name}.git"
-      connection          = "scm:git@github.com:aestasit/${rootProject.name}.git"
-      developerConnection = "scm:git@github.com:aestasit/${rootProject.name}.git"
+      url                 = "https://github.com/aestasit/${rootProject.name}.git"
+      connection          = "https://github.com/aestasit/${rootProject.name}.git"
+      developerConnection = "https://github.com/aestasit/${rootProject.name}.git"
     }
 
     specification {
@@ -85,6 +86,7 @@ config {
         }
       }
     }
+
   }
 
   javadoc {
@@ -160,5 +162,3 @@ gitPublish {
 }
 
 gitPublishCommit.dependsOn(groovydoc)
-
-// apply from: rootProject.file('gradle/sonar.gradle')
