@@ -26,7 +26,7 @@ plugins {
 }
 
 buildScan {
-    termsOfServiceAgree = 'yes'
+  termsOfServiceAgree = 'yes'
 }
 
 config {
@@ -120,6 +120,7 @@ config {
     id                  = 'com.aestasit.sshoogr'
     implementationClass = 'com.aestasit.gradle.plugins.ssh.SshPlugin'
   }
+
 }
 
 repositories {
