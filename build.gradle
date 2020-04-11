@@ -49,7 +49,6 @@ config {
     id                  = 'com.aestasit.sshoogr'
     implementationClass = 'com.aestasit.gradle.plugins.ssh.SshPlugin'
   }
-
 }
 
 dependencies {
@@ -76,7 +75,7 @@ configurations.all {
       "org.slf4j:jcl-over-slf4j:${slf4jVersion}",
       "ch.qos.logback:logback-classic:${logbackVersion}",
       'commons-io:commons-io:2.6',
-      'com.jcraft:jsch:0.1.51'
+      'com.jcraft:jsch:0.1.55'
 }
 
 gitPublish {
