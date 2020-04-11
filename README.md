@@ -1,5 +1,9 @@
 # sshoogr-gradle
 
+![Build Status](https://github.com/sshoogr/sshoogr-gradle/workflows/Build/badge.svg)
+![ASL2 Licensed](http://img.shields.io/badge/license-ASL2-blue.svg)
+![Latest Version](https://api.bintray.com/packages/sshoogr/sshoogr/sshoogr-gradle/images/download.svg)
+
 ## Overview
 
 The `sshoogr-gradle` is a **Gradle** plugin for working with remote **SSH** servers. It allows connecting, executing 
@@ -11,15 +15,6 @@ to support quickly growing operations and hosting department.
 ### Quick example
 
 This is a simple example of some **SSH** features available in the plugin:
-
-**Using a closure**
-
-    task mySshTask(type: RemoteSession) {
-      closure("user:password@localhost:22") {
-        exec 'rm -rf /tmp/cache/'
-        scp "$buildDir/cache.content", '/tmp/cache/cache.content'        
-      }
-    }
 
 **Using an Action**
 
@@ -45,7 +40,7 @@ Applying the plugin can be done in 2 ways:
             gradlePluginPortal()
         }
         dependencies {
-            classpath 'com.aestasit.infrastructure.sshoogr:sshoogr-gradle:0.9.18'
+            classpath 'com.aestasit.infrastructure.sshoogr:sshoogr-gradle:0.9.20'
         }
     }
     apply plugin: 'com.aestasit.sshoogr'
@@ -53,7 +48,7 @@ Applying the plugin can be done in 2 ways:
 **Option #2**
 
     plugins {
-        id 'com.aestasit.sshoogr' version '0.9.18'
+        id 'com.aestasit.sshoogr' version '0.9.20'
     }
 
 
@@ -65,6 +60,6 @@ Plugin can be configured with the help of `sshOptions` structure:
 
 It also gives access to a set of task types (`RemoteSession`, `Exec`, `Scp` etc.) defined by **Sshoogr** - **Groovy SSH DSL**.
 
-For documentation on **Sshoogr DSL**, please, refer to https://github.com/aestasit/sshoogr.
+For documentation on **Sshoogr DSL**, please, refer to https://github.com/sshoogr/sshoogr.
  
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2019 Aestas/IT
+ * Copyright (C) 2011-2020 Aestas/IT
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,95 +15,55 @@
  */
 package com.aestasit.gradle.plugins.ssh.tasks
 
-import com.aestasit.gradle.plugins.ssh.GradleLogger
 import com.aestasit.infrastructure.ssh.dsl.SessionDelegate
 import com.aestasit.infrastructure.ssh.dsl.SshDslEngine
+import groovy.transform.Internal
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 
-import static groovy.lang.Closure.DELEGATE_FIRST
-
 /**
  * @author Andres Almiray
  */
 class RemoteSession extends DefaultTask {
-    private Property<String> url = project.objects.property(String)
-    private Closure<Void> sessionClosure
-    private Action<? extends SessionDelegate> sessionAction
-
     @Optional
     @Input
-    void setUrl(String url) {
-        this.url.set(url)
-    }
-
-    String getUrl() {
-        url.orNull
-    }
-
+    final Property<String> url = project.objects.property(String)
     @Optional
     @Input
-    void setAction(@DelegatesTo(strategy = DELEGATE_FIRST, value = SessionDelegate) Closure<Void> c) {
-        sessionClosure = c
-    }
-
-    @Optional
-    @Input
-    void setAction(Action<? extends SessionDelegate> c) {
-        sessionAction = c
-    }
-
-    void action(@DelegatesTo(strategy = DELEGATE_FIRST, value = SessionDelegate) Closure<Void> c) {
-        setAction(c)
-    }
+    Action<? extends SessionDelegate> sessionAction
 
     void action(Action<? extends SessionDelegate> c) {
-        setAction(c)
-    }
-
-    void action(String url, @DelegatesTo(strategy = DELEGATE_FIRST, value = SessionDelegate) Closure<Void> c) {
-        setUrl(url)
-        setAction(c)
+        setSessionAction(c)
     }
 
     void action(String url, Action<? extends SessionDelegate> c) {
-        setUrl(url)
-        setAction(c)
+        this.url.set(url)
+        setSessionAction(c)
+    }
+
+    void action(Property<String> url, Action<? extends SessionDelegate> c) {
+        this.url.set(url.map { u -> u })
+        setSessionAction(c)
     }
 
     @TaskAction
     void executeRemoteSession() {
-        if (sessionClosure != null) {
-            setLogLevel(project)
-            if (url.present) {
-                new SshDslEngine(project.sshOptions).remoteSession(getUrl(), sessionClosure)
-            } else {
-                new SshDslEngine(project.sshOptions).remoteSession(sessionClosure)
-            }
-        } else if (sessionAction != null) {
-            setLogLevel(project)
+        if (sessionAction != null) {
             // wrap Action with a Closure as SsDslEngine expects a closure
             Closure<Void> invoker = {
-                sessionAction.execute((SessionDelegate) this.delegate)
+                getSessionAction().execute((SessionDelegate) delegate)
             }
-            if (url.present) {
+            if (!url.present) {
                 new SshDslEngine(project.sshOptions).remoteSession(invoker)
             } else {
-                new SshDslEngine(project.sshOptions).remoteSession(getUrl(), invoker)
+                new SshDslEngine(project.sshOptions).remoteSession(getUrl().get(), invoker)
             }
         } else {
-            throw IllegalStateException("Either 'action(Closure)' or 'action(Action)' must be invoked on :$path")
-        }
-    }
-
-    private static void setLogLevel(Project project) {
-        if (project.extensions.sshOptions.logger instanceof GradleLogger) {
-            ((GradleLogger) project.sshOptions.logger).verbose = project.sshOptions.verbose
+            throw new IllegalArgumentException("You must invoke 'action(Action)' on :$path at least once")
         }
     }
 }

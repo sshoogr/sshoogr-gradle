@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2019 Aestas/IT
+ * Copyright (C) 2011-2020 Aestas/IT
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.aestasit.gradle.plugins.ssh.tasks
 
 import com.aestasit.infrastructure.ssh.dsl.SshDslEngine
 import org.gradle.api.DefaultTask
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 
@@ -27,15 +28,14 @@ import org.gradle.api.tasks.TaskAction
  *
  */
 class Exec extends DefaultTask {
-
   @Input
-  String command
+  final Property<String> command = project.objects.property(String)
 
   @TaskAction
   void doExec() {
     SshDslEngine dslEngine = new SshDslEngine(project.sshOptions)
     dslEngine.remoteSession {
-      exec(command)
+      exec(command.get())
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2019 Aestas/IT
+ * Copyright (C) 2011-2020 Aestas/IT
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.aestasit.gradle.plugins.ssh
 
+import com.aestasit.infrastructure.ssh.log.SysOutEventLogger
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -28,6 +29,6 @@ class SshPlugin implements Plugin<Project> {
 
   void apply(Project project) {
     project.extensions.create('sshOptions', SshPluginSettings)
-    project.sshOptions.logger = new GradleLogger(project, false)
+    project.sshOptions.logger = new SysOutEventLogger()
   }
 }

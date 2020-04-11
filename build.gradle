@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2019 Aestas/IT
+ * Copyright (C) 2011-2020 Aestas/IT
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,44 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
   id 'groovy'
-  id 'eclipse'
-  id 'idea'
-  id 'org.kordamp.gradle.build-scan' version '0.19.0'
-  id 'org.kordamp.gradle.project'    version '0.19.0'
-  id 'org.kordamp.gradle.plugin'     version '0.19.0'
-  id 'org.sonarqube'                 version '2.7'
-  id 'org.ajoberstar.git-publish'    version '0.3.2'
-}
-
-buildScan {
-  termsOfServiceAgree = 'yes'
+  id 'com.aestasit.gradle.plugins.sshoogr-parentpom'
+  id 'org.kordamp.gradle.plugin'
+  id 'org.ajoberstar.git-publish'
 }
 
 config {
-
-  release = (rootProject.findProperty('release') ?: false).toBoolean()
-
   info {
     name          = 'Sshoogr Gradle Plugin'
-    vendor        = 'AestasIT'
     description   = 'A Gradle plugin for working with remote SSH servers'
     inceptionYear = '2011'
     tags          = ['ssh']
-
-    links {
-      website      = "https://github.com/aestasit/${rootProject.name}"
-      issueTracker = "https://github.com/aestasit/${rootProject.name}/issues"
-      scm          = "https://github.com/aestasit/${rootProject.name}.git"
-    }
-
-    scm {
-      url                 = "https://github.com/aestasit/${rootProject.name}.git"
-      connection          = "https://github.com/aestasit/${rootProject.name}.git"
-      developerConnection = "https://github.com/aestasit/${rootProject.name}.git"
-    }
 
     specification {
       enabled = false
@@ -59,60 +34,14 @@ config {
     implementation {
       enabled = false
     }
-
-    people {
-      person {
-        id    = 'aadamovich'
-        name  = 'Andrey Adamovich'
-        roles = ['developer', 'author']
-      }
-    }
-
-    repositories {
-      repository {
-        name = 'sonatypeRelease'
-        url  = ossReleaseRepositoryUrl
-        credentials {
-          username = ossReleaseRepositoryUserName
-          password = ossReleaseRepositoryPassword
-        }
-      }
-      repository {
-        name = 'sonatypeSnapshots'
-        url  = ossSnapshotRepositoryUrl
-        credentials {
-          username = ossSnapshotRepositoryUserName
-          password = ossSnapshotRepositoryPassword
-        }
-      }
-    }
-
   }
 
-  javadoc {
-    enabled = false
-  }
-
-  groovydoc {
-    enabled        = true
-    replaceJavadoc = true
-    options {
-      link 'https://docs.gradle.org/5.0/javadoc/', 'org.gradle.'
-    }
-  }
-
-  licensing {
-    licenses {
-      license {
-        id = 'Apache-2.0'
+  docs {
+    groovydoc {
+      options {
+        link 'https://docs.gradle.org/5.0/javadoc/', 'org.gradle.'
       }
     }
-  }
-
-  publishing {
-    signing = !project.version.endsWith('-SNAPSHOT')
-    releasesRepository  = 'sonatypeRelease'
-    snapshotsRepository = 'sonatypeSnapshots'
   }
 
   plugin {
@@ -121,10 +50,6 @@ config {
     implementationClass = 'com.aestasit.gradle.plugins.ssh.SshPlugin'
   }
 
-}
-
-repositories {
-  jcenter()
 }
 
 dependencies {
@@ -137,7 +62,7 @@ dependencies {
   }
   testCompile 'com.aestasit.infrastructure.mock:groovy-sshd-mock:0.3'
   testCompile 'commons-io:commons-io:2.6'
-  testCompile 'junit:junit:4.12'
+  testCompile 'junit:junit:4.13'
 }
 
 configurations {
@@ -146,10 +71,12 @@ configurations {
   all*.exclude module: 'slf4j-simple'
 }
 
-normalization {
-  runtimeClasspath {
-    ignore('/META-INF/MANIFEST.MF')
-  }
+configurations.all {
+  resolutionStrategy.force "org.slf4j:slf4j-api:${slf4jVersion}",
+      "org.slf4j:jcl-over-slf4j:${slf4jVersion}",
+      "ch.qos.logback:logback-classic:${logbackVersion}",
+      'commons-io:commons-io:2.6',
+      'com.jcraft:jsch:0.1.51'
 }
 
 gitPublish {
