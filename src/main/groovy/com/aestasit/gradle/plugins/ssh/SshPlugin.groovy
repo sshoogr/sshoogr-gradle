@@ -16,6 +16,7 @@
 package com.aestasit.gradle.plugins.ssh
 
 import com.aestasit.infrastructure.ssh.log.SysOutEventLogger
+import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -25,10 +26,11 @@ import org.gradle.api.Project
  * @author Aestas/IT
  *
  */
+@CompileStatic
 class SshPlugin implements Plugin<Project> {
 
   void apply(Project project) {
-    project.extensions.create('sshOptions', SshPluginSettings)
-    project.sshOptions.logger = new SysOutEventLogger()
+    SshPluginSettings extension = project.extensions.create('sshOptions', SshPluginSettings)
+    extension.logger = new SysOutEventLogger()
   }
 }

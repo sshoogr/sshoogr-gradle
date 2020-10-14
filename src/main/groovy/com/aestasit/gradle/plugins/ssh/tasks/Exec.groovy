@@ -15,7 +15,9 @@
  */
 package com.aestasit.gradle.plugins.ssh.tasks
 
+import com.aestasit.gradle.plugins.ssh.SshPluginSettings
 import com.aestasit.infrastructure.ssh.dsl.SshDslEngine
+import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -27,13 +29,14 @@ import org.gradle.api.tasks.TaskAction
  * @author Andrey Adamovich
  *
  */
+@CompileStatic
 class Exec extends DefaultTask {
   @Input
   final Property<String> command = project.objects.property(String)
 
   @TaskAction
   void doExec() {
-    SshDslEngine dslEngine = new SshDslEngine(project.sshOptions)
+    SshDslEngine dslEngine = new SshDslEngine(project.extensions.findByType(SshPluginSettings))
     dslEngine.remoteSession {
       exec(command.get())
     }

@@ -13,18 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-pluginManagement {
+
+buildscript {
     repositories {
-        jcenter()
         gradlePluginPortal()
+        jcenter()
         mavenLocal()
     }
-    plugins {
-        id 'com.aestasit.gradle.plugins.sshoogr-parentpom' version sshoogrPomVersion
-        id 'org.kordamp.gradle.plugin'                     version kordampPluginVersion
-        id 'org.ajoberstar.git-publish'                    version '2.1.3'
+    dependencies {
+        classpath "com.aestasit.sshoogr.gradle:sshoogr-parentbuild:$sshoogrBuildVersion"
+        classpath "org.kordamp.gradle:plugin-gradle-plugin:$kordampPluginVersion"
+        classpath "org.ajoberstar:gradle-git-publish:$gitPluginVersion"
     }
 }
+apply plugin: 'com.aestasit.sshoogr.gradle.sshoogr-parentbuild'
 
 rootProject.name = 'sshoogr-gradle'
 
+enforce {
+    rule(enforcer.rules.BanDuplicateClasses) { r ->
+        r.enabled = false
+    }
+    rule(enforcer.rules.ForceDependencies) { r ->
+        r.dependencies.addAll "org.slf4j:slf4j-api:${slf4jVersion}",
+            "org.slf4j:jcl-over-slf4j:${slf4jVersion}",
+            "commons-io:commons-io:${commonsIOVersion}",
+            "com.jcraft:jsch:${jschVersion}",
+            "junit:junit:${junitVersion}"
+    }
+}

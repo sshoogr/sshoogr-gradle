@@ -15,9 +15,10 @@
  */
 package com.aestasit.gradle.plugins.ssh.tasks
 
+import com.aestasit.gradle.plugins.ssh.SshPluginSettings
 import com.aestasit.infrastructure.ssh.dsl.SessionDelegate
 import com.aestasit.infrastructure.ssh.dsl.SshDslEngine
-import groovy.transform.Internal
+import groovy.transform.CompileStatic
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
@@ -28,6 +29,7 @@ import org.gradle.api.tasks.TaskAction
 /**
  * @author Andres Almiray
  */
+@CompileStatic
 class RemoteSession extends DefaultTask {
     @Optional
     @Input
@@ -58,9 +60,11 @@ class RemoteSession extends DefaultTask {
                 getSessionAction().execute((SessionDelegate) delegate)
             }
             if (!url.present) {
-                new SshDslEngine(project.sshOptions).remoteSession(invoker)
+                new SshDslEngine(project.extensions.findByType(SshPluginSettings))
+                    .remoteSession(invoker)
             } else {
-                new SshDslEngine(project.sshOptions).remoteSession(getUrl().get(), invoker)
+                new SshDslEngine(project.extensions.findByType(SshPluginSettings))
+                    .remoteSession(getUrl().get(), invoker)
             }
         } else {
             throw new IllegalArgumentException("You must invoke 'action(Action)' on :$path at least once")

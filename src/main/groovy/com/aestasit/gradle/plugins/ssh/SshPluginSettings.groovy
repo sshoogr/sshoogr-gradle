@@ -15,7 +15,11 @@
  */
 package com.aestasit.gradle.plugins.ssh
 
+import com.aestasit.infrastructure.ssh.ExecOptions
+import com.aestasit.infrastructure.ssh.ScpOptions
 import com.aestasit.infrastructure.ssh.SshOptions
+import groovy.transform.CompileStatic
+import org.gradle.api.Action
 
 /**
  * Configuration object holding options used for global SSH plug-in configuration.
@@ -23,5 +27,13 @@ import com.aestasit.infrastructure.ssh.SshOptions
  * @author Aestas/IT
  *
  */
+@CompileStatic
 class SshPluginSettings extends SshOptions {
+    void execOptions(Action<? super ExecOptions> action) {
+        action.execute(execOptions)
+    }
+
+    void scpOptions(Action<? super ScpOptions> action) {
+        action.execute(scpOptions)
+    }
 }

@@ -15,9 +15,11 @@
  */
 package com.aestasit.gradle.plugins.ssh.tasks
 
+import com.aestasit.gradle.plugins.ssh.SshPluginSettings
 import com.aestasit.infrastructure.ssh.dsl.FileSetDelegate
 import com.aestasit.infrastructure.ssh.dsl.ScpOptionsDelegate
 import com.aestasit.infrastructure.ssh.dsl.SshDslEngine
+import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -29,6 +31,7 @@ import static groovy.lang.Closure.DELEGATE_FIRST
  * @author Andrey Adamovich
  *
  */
+@CompileStatic
 class Scp extends DefaultTask {
 
   private final ScpOptionsDelegate copySpec = new ScpOptionsDelegate()
@@ -43,7 +46,7 @@ class Scp extends DefaultTask {
 
   @TaskAction
   void doCopy() {
-    SshDslEngine dslEngine = new SshDslEngine(project.sshOptions)
+    SshDslEngine dslEngine = new SshDslEngine(project.extensions.findByType(SshPluginSettings))
     dslEngine.remoteSession {
       scp(copySpec)
     }

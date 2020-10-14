@@ -13,79 +13,84 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 plugins {
-  id 'groovy'
-  id 'com.aestasit.gradle.plugins.sshoogr-parentpom'
-  id 'org.kordamp.gradle.plugin'
-  id 'org.ajoberstar.git-publish'
+    id 'idea'
+    id 'java-library'
+    id 'groovy'
+    id 'org.kordamp.gradle.plugin'
+    id 'org.ajoberstar.git-publish'
 }
 
+def resolveProperty(Project project, String envKey, String propKey, String defaultValue) {
+    String value = System.getenv(envKey)
+    if (!value) value = project.findProperty(propKey)
+    !value? defaultValue : value
+}
+
+project.ext.'gradle.publish.key'    = resolveProperty(project, 'GRADLE_PUBLISH_KEY', 'gradle.publish.key', '**undefined**')
+project.ext.'gradle.publish.secret' = resolveProperty(project, 'GRADLE_PUBLISH_SECRET', 'gradle.publish.secret', '**undefined**')
+
 config {
-  info {
-    name          = 'Sshoogr Gradle Plugin'
-    description   = 'A Gradle plugin for working with remote SSH servers'
-    inceptionYear = '2011'
-    tags          = ['ssh']
+    info {
+        name          = 'Sshoogr Gradle Plugin'
+        description   = 'A Gradle plugin for working with remote SSH servers'
+        inceptionYear = '2011'
+        tags          = ['ssh']
 
-    specification {
-      enabled = false
+        specification {
+            enabled = false
+        }
+
+        implementation {
+            enabled = false
+        }
     }
 
-    implementation {
-      enabled = false
+    docs {
+        groovydoc {
+            options {
+                link 'https://docs.gradle.org/5.0/javadoc/', 'org.gradle.'
+            }
+        }
     }
-  }
 
-  docs {
-    groovydoc {
-      options {
-        link 'https://docs.gradle.org/5.0/javadoc/', 'org.gradle.'
-      }
+    plugins {
+        plugin {
+            name                = project.name
+            id                  = 'com.aestasit.sshoogr'
+            implementationClass = 'com.aestasit.gradle.plugins.ssh.SshPlugin'
+        }
     }
-  }
+}
 
-  plugin {
-    enabled             = true
-    id                  = 'com.aestasit.sshoogr'
-    implementationClass = 'com.aestasit.gradle.plugins.ssh.SshPlugin'
-  }
+repositories {
+    mavenLocal()
 }
 
 dependencies {
-  compile gradleApi()
-  compile "org.slf4j:slf4j-api:${slf4jVersion}"
-  compile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
-  compile "ch.qos.logback:logback-classic:${logbackVersion}"
-  compile("com.aestasit.infrastructure.sshoogr:sshoogr:${sshoogrVersion}") {
-    exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-  }
-  testCompile 'com.aestasit.infrastructure.mock:groovy-sshd-mock:0.3'
-  testCompile 'commons-io:commons-io:2.6'
-  testCompile 'junit:junit:4.13'
-}
+    compileOnly gradleApi()
 
-configurations {
-  all*.exclude group: 'commons-logging'
-  all*.exclude group: 'log4j'
-  all*.exclude module: 'slf4j-simple'
-}
+    api "org.slf4j:slf4j-api:${slf4jVersion}"
+    api "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+    api "ch.qos.logback:logback-classic:${logbackVersion}"
+    api("com.aestasit.infrastructure.sshoogr:sshoogr:${sshoogrVersion}") {
+        exclude group: 'org.codehaus.groovy', module: 'groovy'
+    }
 
-configurations.all {
-  resolutionStrategy.force "org.slf4j:slf4j-api:${slf4jVersion}",
-      "org.slf4j:jcl-over-slf4j:${slf4jVersion}",
-      "ch.qos.logback:logback-classic:${logbackVersion}",
-      'commons-io:commons-io:2.6',
-      'com.jcraft:jsch:0.1.55'
+    testImplementation "com.aestasit.infrastructure.mock:groovy-sshd-mock:${sshdMockVersion}"
+    testImplementation "commons-io:commons-io:${commonsIOVersion}"
+    testImplementation "junit:junit:${junitVersion}"
 }
 
 gitPublish {
-  repoUri = rootProject.extensions.findByName('config').info.links.scm
-  branch  = 'gh-pages'
-  contents {
-    from(groovydoc.outputs.files) {
-      into 'docs/groovydoc'
+    repoUri = rootProject.extensions.findByName('config').info.links.scm
+    branch = 'gh-pages'
+    contents {
+        from(groovydoc.outputs.files) {
+            into 'docs/groovydoc'
+        }
     }
-  }
 }
 
 gitPublishCommit.dependsOn(groovydoc)
